@@ -1,0 +1,55 @@
+services:
+  neo4j:
+    image: neo4j:5-community
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    environment:
+      - NEO4J_AUTH=neo4j/chipflow-neo4j
+      - NEO4J_PLUGINS=[]
+    volumes:
+      - neo4j_data:/data
+      - neo4j_logs:/logs
+    healthcheck:
+      test: ["CMD-SHELL", "cypher-shell -u neo4j -p chipflow-neo4j 'RETURN 1'"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - CHIPFLOW_AGENT_PROVIDER=${CHIPFLOW_AGENT_PROVIDER:-deterministic}
+      - CHIPFLOW_OPENAI_AGENT_MODEL=${CHIPFLOW_OPENAI_AGENT_MODEL:-}
+      - CHIPFLOW_KG_BACKEND=${CHIPFLOW_KG_BACKEND:-neo4j}
+      - NEO4J_URI=${NEO4J_URI:-bolt://neo4j:7687}
+      - NEO4J_USER=${NEO4J_USER:-neo4j}
+      - NEO4J_PASSWORD=${NEO4J_PASSWORD:-chipflow-neo4j}
+      - NEO4J_DATABASE=${NEO4J_DATABASE:-neo4j}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+    volumes:
+      - ./backend/data:/app/backend/data
+      - ./backend/workdir:/app/backend/workdir
+    depends_on:
+      neo4j:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_BASE_URL=http://localhost:8000
+    depends_on:
+      - backend
+
+volumes:
+  neo4j_data:
+  neo4j_logs:

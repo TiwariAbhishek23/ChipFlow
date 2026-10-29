@@ -1,0 +1,81 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 210 20% 98%;
+    --foreground: 222 32% 9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 32% 9%;
+    --primary: 172 72% 31%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 219 18% 92%;
+    --secondary-foreground: 222 30% 14%;
+    --muted: 216 18% 94%;
+    --muted-foreground: 218 12% 40%;
+    --accent: 41 94% 56%;
+    --accent-foreground: 30 30% 12%;
+    --destructive: 0 72% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 216 16% 84%;
+    --input: 216 16% 84%;
+    --ring: 172 72% 31%;
+  }
+
+  .dark {
+    --background: 220 18% 8%;
+    --foreground: 210 24% 95%;
+    --card: 220 16% 11%;
+    --card-foreground: 210 24% 95%;
+    --primary: 172 70% 40%;
+    --primary-foreground: 170 20% 8%;
+    --secondary: 222 13% 18%;
+    --secondary-foreground: 210 24% 95%;
+    --muted: 222 13% 16%;
+    --muted-foreground: 217 12% 66%;
+    --accent: 41 90% 60%;
+    --accent-foreground: 30 35% 11%;
+    --destructive: 0 68% 55%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 222 12% 24%;
+    --input: 222 12% 24%;
+    --ring: 172 70% 40%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    color-scheme: light;
+  }
+
+  html.dark {
+    color-scheme: dark;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    letter-spacing: 0;
+  }
+}
+
+@layer components {
+  .panel {
+    @apply rounded-lg border bg-card text-card-foreground shadow-sm;
+  }
+
+  .panel-header {
+    @apply flex min-h-12 items-center justify-between gap-3 border-b px-4 py-3;
+  }
+
+  .panel-body {
+    @apply p-4;
+  }
+
+  .mono-scroll {
+    @apply overflow-auto rounded-md border bg-muted/45 p-3 font-mono text-xs leading-5;
+  }
+}
+
